@@ -1,16 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0)
-df = df.drop(['Lat', 'Long'])
+# Skiping row 1 and 2 since they only contain coordinates of countries
+df = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
 print(df)
 
-   
-# df = pd.DataFrame(df,columns=['Australia','Austria'])
-# df.plot(x ='Country/Region', y='Austria', kind = 'scatter')
-# plt.show()
 
-df = pd.DataFrame(df, columns=['Austria', 'Sweden'])
-df.plot(subplots=True)
-# plt.legend()
+df = pd.DataFrame(df, columns=['Denmark','Austria', 'Sweden'])
+print(df)
+df.plot()
 plt.show()
