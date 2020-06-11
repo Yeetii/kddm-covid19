@@ -67,6 +67,7 @@ def plot_shift_country_save(df, best_index):
     cases_col_name = df.columns.values[0]
     search_col_name = df.columns.values[1]
     plot_country_internal(df)
+    plt.title('Shifted ' + str(best_index-75) + " days")
     # Saves plot as a png
     plt.savefig(search_col_name + "|" + cases_col_name+"_best_shift")
     # Without this plot remains in memory
