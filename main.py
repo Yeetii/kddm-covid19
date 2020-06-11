@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import signal
+import numpy as np
 
 # https://pandas.pydata.org/pandas-docs/version/0.13/visualization.html
 
@@ -51,8 +52,15 @@ def rename_columns(df, first_suffix, second_suffix):
 
 def remove_outliers(df, outliers):
     df = df.drop(columns=outliers, axis='columns')
-    
     return df
+
+def best_shift(df):
+    cor = signal.correlate(df.iloc[:,0], df.iloc[:,1], mode='full', method='auto')
+        
+    best_index = np.argmax(cor)
+    best_cor = max(cor)
+        
+    return best_index, best_cor
 
 # Skiping row 1 and 2 since they only contain coordinates of countries
 df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
@@ -65,7 +73,14 @@ df_search = remove_outliers(df_search, outliers)
 
 dfs = merge_dataframes(df_confirmed, df_search)
 
-print(dfs)
+for df in dfs:
+    best_shift(df)
+
+
+df = dfs[0]
+df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=np.argmax(cor)-75)
+plot_country_save(df)
+
 
 dfs = map(lambda df : rename_columns(df, "_Confirmed", "_Search-Coronavirus"), dfs)
 
@@ -73,7 +88,7 @@ dfs = map(lambda df : rename_columns(df, "_Confirmed", "_Search-Coronavirus"), d
 
 
 
-cor = signal.correlate(df_confirmed, df_search, mode='full', method='auto')
+
 """
 print("nr rows : ", len(cor))
 print("nr cols : ", len(cor[0]))
