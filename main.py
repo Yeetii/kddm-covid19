@@ -62,6 +62,16 @@ def best_shift(df):
         
     return (best_index, best_cor)
 
+def plot_shift_country_save(df, best_index):
+    df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=best_index-75)
+    cases_col_name = df.columns.values[0]
+    search_col_name = df.columns.values[1]
+    plot_country_internal(df)
+    # Saves plot as a png
+    plt.savefig(search_col_name + "|" + cases_col_name+"_best_shift")
+    # Without this plot remains in memory
+    plt.close()
+
 # Skiping row 1 and 2 since they only contain coordinates of countries
 df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
 df_search = pd.read_csv('data/time_serie_coronavirus_searches.csv', index_col=0)
@@ -78,7 +88,7 @@ for df in dfs:
     (best_index, best_cor) = best_shift(df)
     country_name = df.columns.values[0].split('_')[0]
     best_shifts = best_shifts.append({'country': country_name, 'best_index': best_index, 'best_correlation': best_cor}, ignore_index=True)
-
+    plot_shift_country_save(df, best_index)
 print(best_shifts)
 # df = dfs[0]
 # df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=np.argmax(cor)-75)
