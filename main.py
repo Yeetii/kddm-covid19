@@ -60,7 +60,7 @@ def best_shift(df):
     best_index = np.argmax(cor)
     best_cor = max(cor)
         
-    return best_index, best_cor
+    return (best_index, best_cor)
 
 # Skiping row 1 and 2 since they only contain coordinates of countries
 df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
@@ -72,23 +72,17 @@ df_confirmed = remove_outliers(df_confirmed, outliers)
 df_search = remove_outliers(df_search, outliers)
 
 dfs = merge_dataframes(df_confirmed, df_search)
+best_shifts = pd.DataFrame([], columns=['country','best_index','best_correlation'])
 for df in dfs:
-    df = rename_columns(df, "_Confirmed", "_Search-Coronavirus")
+    rename_columns(df, "_Confirmed", "_Search-Coronavirus")
+    (best_index, best_cor) = best_shift(df)
+    country_name = df.columns.values[0].split('_')[0]
+    best_shifts = best_shifts.append({'country': country_name, 'best_index': best_index, 'best_correlation': best_cor}, ignore_index=True)
 
-for df in dfs:
-    best_shift(df)
-
-
-df = dfs[0]
-df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=np.argmax(cor)-75)
-plot_country_save(df)
-
-
-
-
-
-
-
+print(best_shifts)
+# df = dfs[0]
+# df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=np.argmax(cor)-75)
+# plot_country_save(df)
 
 """
 print("nr rows : ", len(cor))
