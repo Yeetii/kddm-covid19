@@ -74,17 +74,20 @@ def plot_shift_country_save(df, best_index):
     # Without this plot remains in memory
     plt.close()
 
-def data_correlation_analysis(filename):
+
+
+def data_correlation_analysis(filename, outliers):
     # Skiping row 1 and 2 since they only contain coordinates of countries
     df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
     df_search = pd.read_csv(filename, index_col=0)
 
-    outliers = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe"]
 
     df_confirmed = remove_outliers(df_confirmed, outliers)
     df_search = remove_outliers(df_search, outliers)
-
+    
+    
     dfs = merge_dataframes(df_confirmed, df_search)
+    
     best_shifts = pd.DataFrame([], columns=['country','best_index','best_correlation'])
     for df in dfs:
         rename_columns(df, "_Confirmed", "_Search-Coronavirus")
@@ -95,4 +98,11 @@ def data_correlation_analysis(filename):
         best_shifts = best_shifts.append({'country': country_name, 'best_index': best_index, 'best_correlation': best_cor}, ignore_index=True)
     print(best_shifts.iloc[:,1].mean()-75)
 
-data_correlation_analysis('data/time_serie_coronavirus_searches.csv')
+
+outliers_corona = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe"]
+outliers_mask = ["Argentina", "Bolivia","Bahamas","Barbados", "Chile","Fiji","Iceland", "Liechtenstein", "Malta", "Papua New Guinea", "Suriname", "Tanzania", "Zambia", "China", "Colombia", "Costa Rica", "Czechia", "Dominican Republic", "Ecuador", "Egypt", "Finland", "Georgia", "Honduras", "Indonesia", "Iraq", "Jamaica", "Jordan", "Kuwait", "Latvia", "Lebanon", "Luxembourg", "Mexico", "Morocco", "Namibia","Nepal","North Macedonia","Panama","Paraguay","Peru","Qatar","Russia", "Saudi Arabia", "Senegal", "Spain","Taiwan*", "Tunisia", "United Arab Emirates", "Uruguay"]
+outliers_toiletpaper = ["Bahamas", "Bengladesh", "Taiwan*", "Barbados", "Bolivia", "China", "Costa Rica", "Croatia", "Czechia", "Dominican Republic", "Ecuador", "Egypt", "Israel","Jordan","Kenya", "Liechtenstein", "Lithania", "Malta","Nambia", "Nepal", "Pakistan", "Panama", "Papua New Guinea","Paraguay","Saudi Arabia","Senegal","Slovakia", "Tanzania","Thailand","Tunisia","Turkey","Uganda","Ukraine","Zambia","Zimbabwe"]
+
+#data_correlation_analysis('data/time_serie_coronavirus_searches.csv', outliers_corona)
+#data_correlation_analysis('data/time_serie_mask_searches.csv', outliers_mask)
+#data_correlation_analysis('data/time_serie_toiletpaper_searches.csv', outliers_toiletpaper)
