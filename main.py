@@ -47,7 +47,7 @@ def merge_dataframes(df_cases, df_search):
 def rename_columns(df, first_suffix, second_suffix):
     first_name = df.columns.values[0]
     second_name = df.columns.values[1]
-    df = df.rename(columns={first_name: first_name[:-2] + first_suffix, second_name: second_name[:-2] + second_suffix})
+    df = df.rename(columns={first_name: first_name[:-2] + first_suffix, second_name: second_name[:-2] + second_suffix}, inplace=True)
     return df
 
 def remove_outliers(df, outliers):
@@ -72,6 +72,8 @@ df_confirmed = remove_outliers(df_confirmed, outliers)
 df_search = remove_outliers(df_search, outliers)
 
 dfs = merge_dataframes(df_confirmed, df_search)
+for df in dfs:
+    df = rename_columns(df, "_Confirmed", "_Search-Coronavirus")
 
 for df in dfs:
     best_shift(df)
@@ -82,7 +84,6 @@ df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=np.argmax(cor)-75)
 plot_country_save(df)
 
 
-dfs = map(lambda df : rename_columns(df, "_Confirmed", "_Search-Coronavirus"), dfs)
 
 
 
