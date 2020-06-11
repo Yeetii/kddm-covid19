@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy import signal
 
 # https://pandas.pydata.org/pandas-docs/version/0.13/visualization.html
 
@@ -48,10 +49,38 @@ def rename_columns(df, first_suffix, second_suffix):
     df = df.rename(columns={first_name: first_name[:-2] + first_suffix, second_name: second_name[:-2] + second_suffix})
     return df
 
+def remove_outliers(df, outliers):
+    df = df.drop(columns=outliers, axis='columns')
+    
+    return df
+
 # Skiping row 1 and 2 since they only contain coordinates of countries
 df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
 df_search = pd.read_csv('data/time_serie_coronavirus_searches.csv', index_col=0)
+
+outliers = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe"]
+
+df_confirmed = remove_outliers(df_confirmed, outliers)
+df_search = remove_outliers(df_search, outliers)
+
 dfs = merge_dataframes(df_confirmed, df_search)
+
+print(dfs)
+
 dfs = map(lambda df : rename_columns(df, "_Confirmed", "_Search-Coronavirus"), dfs)
+
+
+
+
+
+cor = signal.correlate(df_confirmed, df_search, mode='full', method='auto')
+"""
+print("nr rows : ", len(cor))
+print("nr cols : ", len(cor[0]))
+
+print(dfs.size)
+"""
+"""
 for df in dfs:
     plot_country_save(df)
+"""
