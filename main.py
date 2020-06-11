@@ -63,7 +63,8 @@ def best_shift(df):
     return (best_index, best_cor)
 
 def plot_shift_country_save(df, best_index):
-    df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=best_index-75)
+    df = df.copy()
+    df.iloc[:,1] = df.iloc[:,1].shift(periods=best_index-75)
     cases_col_name = df.columns.values[0]
     search_col_name = df.columns.values[1]
     plot_country_internal(df)
@@ -73,36 +74,25 @@ def plot_shift_country_save(df, best_index):
     # Without this plot remains in memory
     plt.close()
 
-# Skiping row 1 and 2 since they only contain coordinates of countries
-df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
-df_search = pd.read_csv('data/time_serie_coronavirus_searches.csv', index_col=0)
+def data_correlation_analysis(filename):
+    # Skiping row 1 and 2 since they only contain coordinates of countries
+    df_confirmed = pd.read_csv('data/time_series_covid19_confirmed_global.csv', index_col=0, skiprows=[1,2])
+    df_search = pd.read_csv(filename, index_col=0)
 
-outliers = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe"]
+    outliers = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe"]
 
-df_confirmed = remove_outliers(df_confirmed, outliers)
-df_search = remove_outliers(df_search, outliers)
+    df_confirmed = remove_outliers(df_confirmed, outliers)
+    df_search = remove_outliers(df_search, outliers)
 
-dfs = merge_dataframes(df_confirmed, df_search)
-best_shifts = pd.DataFrame([], columns=['country','best_index','best_correlation'])
-for df in dfs:
-    rename_columns(df, "_Confirmed", "_Search-Coronavirus")
-    (best_index, best_cor) = best_shift(df)
-    country_name = df.columns.values[0].split('_')[0]
-    best_shifts = best_shifts.append({'country': country_name, 'best_index': best_index, 'best_correlation': best_cor}, ignore_index=True)
-    #plot_shift_country_save(df, best_index)
-#print(best_shifts)
-print(best_shifts.iloc[:,1].mean()-75)
-# df = dfs[0]
-# df.iloc[:,1] = dfs[0].iloc[:,1].shift(periods=np.argmax(cor)-75)
-# plot_country_save(df)
+    dfs = merge_dataframes(df_confirmed, df_search)
+    best_shifts = pd.DataFrame([], columns=['country','best_index','best_correlation'])
+    for df in dfs:
+        rename_columns(df, "_Confirmed", "_Search-Coronavirus")
+        (best_index, best_cor) = best_shift(df)
+        country_name = df.columns.values[0].split('_')[0]
+        plot_shift_country_save(df, best_index)
+        plot_country_save(df)
+        best_shifts = best_shifts.append({'country': country_name, 'best_index': best_index, 'best_correlation': best_cor}, ignore_index=True)
+    print(best_shifts.iloc[:,1].mean()-75)
 
-"""
-print("nr rows : ", len(cor))
-print("nr cols : ", len(cor[0]))
-
-print(dfs.size)
-"""
-"""
-for df in dfs:
-    plot_country_save(df)
-"""
+data_correlation_analysis('data/time_serie_coronavirus_searches.csv')
