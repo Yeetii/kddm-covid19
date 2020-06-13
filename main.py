@@ -99,10 +99,10 @@ def data_correlation_analysis(filename, outliers):
     print(best_shifts.iloc[:,1].mean()-75)
 
 
-outliers_corona = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe"]
+outliers_corona = ["Bahamas", "Barbados", "China", "Estonia","Fiji","Iceland","Liechtenstein","Malta","Papua New Guinea","Suriname","Tanzania","Zambia","Zimbabwe", "Taiwan*"]
 outliers_mask = ["Argentina", "Bolivia","Bahamas","Barbados", "Chile","Fiji","Iceland", "Liechtenstein", "Malta", "Papua New Guinea", "Suriname", "Tanzania", "Zambia", "China", "Colombia", "Costa Rica", "Czechia", "Dominican Republic", "Ecuador", "Egypt", "Finland", "Georgia", "Honduras", "Indonesia", "Iraq", "Jamaica", "Jordan", "Kuwait", "Latvia", "Lebanon", "Luxembourg", "Mexico", "Morocco", "Namibia","Nepal","North Macedonia","Panama","Paraguay","Peru","Qatar","Russia", "Saudi Arabia", "Senegal", "Spain","Taiwan*", "Tunisia", "United Arab Emirates", "Uruguay"]
-outliers_toiletpaper = ["Bahamas", "Bengladesh", "Taiwan*", "Barbados", "Bolivia", "China", "Costa Rica", "Croatia", "Czechia", "Dominican Republic", "Ecuador", "Egypt", "Israel","Jordan","Kenya", "Liechtenstein", "Lithania", "Malta","Nambia", "Nepal", "Pakistan", "Panama", "Papua New Guinea","Paraguay","Saudi Arabia","Senegal","Slovakia", "Tanzania","Thailand","Tunisia","Turkey","Uganda","Ukraine","Zambia","Zimbabwe"]
+outliers_toiletpaper = ["Bahamas", "Bangladesh", "Taiwan*", "Barbados", "Bolivia", "China", "Costa Rica", "Croatia", "Czechia", "Dominican Republic", "Ecuador", "Egypt", "Israel","Jordan","Kenya", "Liechtenstein", "Lithuania", "Malta","Namibia", "Nepal", "Pakistan", "Panama", "Papua New Guinea","Paraguay","Saudi Arabia","Senegal","Slovakia", "Tanzania","Thailand","Tunisia","Turkey","Uganda","Ukraine","Zambia","Zimbabwe"]
 
 #data_correlation_analysis('data/time_serie_coronavirus_searches.csv', outliers_corona)
 #data_correlation_analysis('data/time_serie_mask_searches.csv', outliers_mask)
-#data_correlation_analysis('data/time_serie_toiletpaper_searches.csv', outliers_toiletpaper)
+data_correlation_analysis('data/time_serie_toiletpaper_searches.csv', outliers_toiletpaper)
